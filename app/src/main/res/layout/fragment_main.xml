@@ -7,7 +7,6 @@
         <variable
             name="viewModel"
             type="com.udacity.asteroidradar.main.MainViewModel" />
-
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -41,7 +40,7 @@
                 android:textSize="20sp"
                 android:layout_gravity="bottom"
                 android:background="#55010613"
-                android:text="@string/image_of_the_day" />
+                android:text="@{Integer.valueOf(viewModel.asteroids).toString()}" />
         </FrameLayout>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -69,3 +68,7 @@
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
+
+<!--    android:text="@string/image_of_the_day"-->
+<!--    android:text="@{Integer.valueOf(viewModel.asteroids).toString()}"-->
+<!--    android:text="@{viewModel.status}-->

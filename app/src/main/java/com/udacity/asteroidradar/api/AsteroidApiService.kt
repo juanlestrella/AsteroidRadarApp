@@ -1,8 +1,8 @@
 package com.udacity.asteroidradar.api
 
-import androidx.room.PrimaryKey
-import com.udacity.asteroidradar.Asteroid
 import com.udacity.asteroidradar.Constants
+import retrofit2.Call
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.GET
@@ -20,7 +20,7 @@ interface AsteroidApiService {
         @Query("start_date") startDate: String,
         @Query("end_date") endDate: String,
         @Query("api_key") apiKey: String):
-            List<Asteroid>
+            String
 }
 
 object AsteroidApi{
