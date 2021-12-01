@@ -15,7 +15,8 @@ class ItemAdapter : ListAdapter<Asteroid, ItemAdapter.ItemViewHolder>(DiffCallba
         RecyclerView.ViewHolder(binding.root){
 
         fun bind(item: Asteroid?) {
-            TODO()
+            binding.asteroid = item
+            binding.executePendingBindings()
         }
 
     }

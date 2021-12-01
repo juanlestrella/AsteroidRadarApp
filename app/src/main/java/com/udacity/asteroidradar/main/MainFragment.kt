@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.observe
 import com.udacity.asteroidradar.R
 import com.udacity.asteroidradar.databinding.FragmentMainBinding
 
@@ -19,6 +20,11 @@ class MainFragment : Fragment() {
         binding.lifecycleOwner = this
 
         binding.viewModel = viewModel
+        binding.asteroidRecycler.adapter = ItemAdapter()
+
+        viewModel.asteroids.observe(viewLifecycleOwner) {
+            asteroidsList -> (binding.asteroidRecycler.adapter as ItemAdapter).submitList(asteroidsList)
+        }
 
         setHasOptionsMenu(true)
 

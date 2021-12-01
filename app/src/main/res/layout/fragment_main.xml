@@ -40,7 +40,7 @@
                 android:textSize="20sp"
                 android:layout_gravity="bottom"
                 android:background="#55010613"
-                android:text="@{Integer.valueOf(viewModel.asteroids).toString()}" />
+                android:text="@{viewModel.status}" />
         </FrameLayout>
 
         <androidx.recyclerview.widget.RecyclerView

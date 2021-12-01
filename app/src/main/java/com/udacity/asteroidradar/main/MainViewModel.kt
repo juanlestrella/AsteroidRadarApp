@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.udacity.asteroidradar.Asteroid
 import com.udacity.asteroidradar.Constants
 import com.udacity.asteroidradar.api.AsteroidApi
 import com.udacity.asteroidradar.api.getNextSevenDaysFormattedDates
@@ -25,8 +26,8 @@ class MainViewModel : ViewModel() {
     val status: LiveData<String>
         get() = _status
 
-    private val _asteroids = MutableLiveData<Int>()
-    val asteroids: LiveData<Int>
+    private val _asteroids = MutableLiveData<List<Asteroid>>()
+    val asteroids: LiveData<List<Asteroid>>
         get() = _asteroids
 
     private val startDate = getNextSevenDaysFormattedDates()[0]
@@ -37,6 +38,7 @@ class MainViewModel : ViewModel() {
         Log.i("MainViewModel", startDate)
         Log.i("MainViewModel", endDate)
         Log.i("MainViewModel", _status.value.toString())
+        Log.i("MainViewModel", _asteroids.value.toString())
     }
 
     private fun getAsteroids(){
@@ -44,7 +46,7 @@ class MainViewModel : ViewModel() {
             try{
                 val response = AsteroidApi.retrofitService.getAsteroids(startDate, endDate, apiKey)
                 val jsonObject = JSONObject(response)
-                _asteroids.postValue(parseAsteroidsJsonResult(jsonObject).size)
+                _asteroids.postValue(parseAsteroidsJsonResult(jsonObject))
                 _status.postValue("Connected")
             }catch (e: Exception) {
                 _status.postValue("Failure:" + e.message)
