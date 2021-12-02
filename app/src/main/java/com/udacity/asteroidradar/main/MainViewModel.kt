@@ -20,6 +20,24 @@ import java.util.*
 
 private const val apiKey = "0yGMoxKgGXPW4ClJNyCqMEsR6eC89ZxDofuRPkwy"
 
+/**
+ * TODO
+ * -connect to api and get data
+ * -include recycler view
+ * 0) Implement Details Screen for once an "item" is clicked
+ * 1) Create a local database using Room
+ * 2) Store API data to local database
+ * 3) Display the asteroids from database -> Sorted by date
+ * 4) Cache data of asteroid by using a worker
+ *      -> downloads and saves today's asteroids in background once a day
+ *      -> when device is charging and wifi is enabled
+ * 5) Download "Picture of Day"
+ *      -> Moshi, Picasso
+ * 6) Add content description to views
+ *      -> "Picture of day(Title)", details images, dialog button
+ * 7) Check that app works without an internet connection
+ */
+
 class MainViewModel : ViewModel() {
 
     private val _status = MutableLiveData<String>()
