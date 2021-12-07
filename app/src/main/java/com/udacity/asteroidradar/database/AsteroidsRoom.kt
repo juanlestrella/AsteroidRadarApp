@@ -12,7 +12,7 @@ interface AsteroidsDao{
     fun getAsteroids(): LiveData<List<Asteroid>>
 }
 
-@Database(entities = [Asteroid::class], version = 1)
+@Database(entities = [AsteroidEntities::class], version = 1)
 abstract class AsteroidsDatabase: RoomDatabase() {
     abstract val asteroidsDao: AsteroidsDao
 }
