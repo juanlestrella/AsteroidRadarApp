@@ -47,6 +47,7 @@ class MainViewModel(application: Application) : ViewModel() {
         viewModelScope.launch {
             try{
                 repository.refreshData()
+                repository.getImageOfTheDay()
                 _status.postValue("Connected")
             }catch (e: Exception){
                 _status.postValue("Failure:" + e.message)
@@ -56,6 +57,7 @@ class MainViewModel(application: Application) : ViewModel() {
     }
 
     val asteroids = repository.asteroids
+    val imageOfTheDay = repository.imageOfTheDay //fix picasso
 
     class Factory(val app: Application) : ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
