@@ -1,19 +1,10 @@
 package com.udacity.asteroidradar.main
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.*
-import com.udacity.asteroidradar.Asteroid
-import com.udacity.asteroidradar.api.AsteroidApi
-import com.udacity.asteroidradar.api.getNextSevenDaysFormattedDates
-import com.udacity.asteroidradar.api.parseAsteroidsJsonResult
 import com.udacity.asteroidradar.database.getDatabase
 import com.udacity.asteroidradar.repository.AsteroidsRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.json.JSONObject
-import java.lang.Exception
-
 
 
 /**
@@ -27,11 +18,11 @@ import java.lang.Exception
  * - Cache data of asteroid by using a worker
  *      -> downloads and saves today's asteroids in background once a day
  *      -> when device is charging and wifi is enabled
- * 5) Download "Picture of Day"
+ * - Download "Picture of Day"
  *      -> Moshi, Picasso
- * 6) Add content description to views
+ * - Add content description to views
  *      -> "Picture of day(Title)", details images, dialog button
- * 7) Check that app works without an internet connection
+ * - Check that app works without an internet connection
  */
 
 class MainViewModel(application: Application) : ViewModel() {
@@ -45,14 +36,13 @@ class MainViewModel(application: Application) : ViewModel() {
 
     init {
         viewModelScope.launch {
-            try{
+            try {
                 repository.refreshData()
                 repository.getImageOfTheDay()
                 _status.postValue("Connected")
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 _status.postValue("Failure:" + e.message)
             }
-
         }
     }
 
@@ -71,27 +61,16 @@ class MainViewModel(application: Application) : ViewModel() {
 }
 
 /**
-     * problem: return value of parseAsteroidsJsonResult(jsonObject) is ArrayList<Asteroid>
-     * possible solution:
-     * still store in _asteroids.postValue the api data
-     * then loop thru the _asteroids.value and store the inner value in the database
-     * then replace the databinding from using the _asteroids value to using the database
-     *
-     * Use two functions:
-     * ----- 1) getApiData() = gets the data from api
-     * ----- 2) loadDatabase() = store the data from api to database
-     */
-    /**
-     * problem: return value of parseAsteroidsJsonResult(jsonObject) is ArrayList<Asteroid>
-     * possible solution:
-     * still store in _asteroids.postValue the api data
-     * then loop thru the _asteroids.value and store the inner value in the database
-     * then replace the databinding from using the _asteroids value to using the database
-     *
-     * Use two functions:
-     * ----- 1) getApiData() = gets the data from api
-     * ----- 2) loadDatabase() = store the data from api to database
-*/
+ * problem: return value of parseAsteroidsJsonResult(jsonObject) is ArrayList<Asteroid>
+ * possible solution:
+ * still store in _asteroids.postValue the api data
+ * then loop through the _asteroids.value and store the inner value in the database
+ * then replace the data binding from using the _asteroids value to using the database
+ *
+ * Use two functions:
+ * ----- 1) getApiData() = gets the data from api
+ * ----- 2) loadDatabase() = store the data from api to database
+ */
 /*
 private val asteroidDao = getDatabase(application).asteroidsDao
 private fun loadDatabase(asteroidsData: LiveData<List<Asteroid>>){

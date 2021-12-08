@@ -13,7 +13,7 @@ import retrofit2.http.Query
 import java.util.concurrent.TimeUnit
 
 
-var okHttpClient = OkHttpClient.Builder()
+var okHttpClient: OkHttpClient = OkHttpClient.Builder()
     .connectTimeout(1, TimeUnit.MINUTES)
     .readTimeout(30, TimeUnit.SECONDS)
     .writeTimeout(15, TimeUnit.SECONDS)

@@ -2,11 +2,8 @@ package com.udacity.asteroidradar
 
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.widget.AppCompatDrawableManager.get
 import androidx.databinding.BindingAdapter
 import com.squareup.picasso.Picasso
-import java.lang.reflect.Array.get
-import java.nio.file.Paths.get
 
 @BindingAdapter("statusIcon")
 fun bindAsteroidStatusImage(imageView: ImageView, isHazardous: Boolean) {
@@ -44,8 +41,8 @@ fun bindTextViewToDisplayVelocity(textView: TextView, number: Double) {
     textView.text = String.format(context.getString(R.string.km_s_unit_format), number)
 }
 
-@BindingAdapter("imageOfTheDaySrc")
-fun bindImageOfTheDayImage(imageView: ImageView, path: String){
+@BindingAdapter("imageUrl")
+fun setImageUrl(imageView: ImageView, path: String?){
     Picasso.get()
         .load(path)
         .placeholder(R.drawable.placeholder_picture_of_day)

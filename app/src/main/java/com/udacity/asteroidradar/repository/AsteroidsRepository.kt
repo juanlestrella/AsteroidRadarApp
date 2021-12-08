@@ -15,7 +15,7 @@ import org.json.JSONObject
 class AsteroidsRepository(private val database: AsteroidsDatabase) {
 
     private val startDate = getNextSevenDaysFormattedDates()[0]
-    private val endDate = getNextSevenDaysFormattedDates()[7]
+    private val endDate = getNextSevenDaysFormattedDates()[getNextSevenDaysFormattedDates().lastIndex]
     private val apiKey = "0yGMoxKgGXPW4ClJNyCqMEsR6eC89ZxDofuRPkwy"
 
     val asteroids: LiveData<List<Asteroid>> = database.asteroidsDao.getAsteroids()
@@ -26,7 +26,10 @@ class AsteroidsRepository(private val database: AsteroidsDatabase) {
 
     suspend fun getImageOfTheDay(){
         withContext(Dispatchers.IO){
-            _imageOfTheDay.value = AsteroidApi.retrofitService.getImageOfTheDay(apiKey)
+            _imageOfTheDay.postValue(AsteroidApi.retrofitService.getImageOfTheDay(apiKey))
+            if (_imageOfTheDay.value!!.mediaType != "image") {
+                _imageOfTheDay.postValue(null)
+            }
         }
     }
 

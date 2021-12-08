@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit
 
 class AsteroidApplication : Application() {
 
-    val applicationScope = CoroutineScope(Dispatchers.IO)
+    private val applicationScope = CoroutineScope(Dispatchers.IO)
 
     override fun onCreate() {
         super.onCreate()
