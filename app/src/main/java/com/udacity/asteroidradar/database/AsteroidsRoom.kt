@@ -8,25 +8,29 @@ import com.udacity.asteroidradar.Asteroid
 @Dao
 interface AsteroidsDao{
 
-    @Query("SELECT * FROM AsteroidEntities")
+    @Query("SELECT * FROM Asteroid")
     fun getAsteroids(): LiveData<List<Asteroid>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(asteroid: Asteroid)
 }
 
-@Database(entities = [AsteroidEntities::class], version = 1)
+@Database(entities = [Asteroid::class], version = 1)
 abstract class AsteroidsDatabase: RoomDatabase() {
     abstract val asteroidsDao: AsteroidsDao
 }
-private lateinit var INSTANCE: AsteroidsDatabase
 
+private lateinit var INSTANCE: AsteroidsDatabase
 fun getDatabase(context: Context) : AsteroidsDatabase{
-    return INSTANCE ?: synchronized(AsteroidsDatabase::class.java){
-        val instance = Room.databaseBuilder(
-            context,
-            AsteroidsDatabase::class.java,
-            "asteroids_database")
-            .build()
-        INSTANCE = instance
-        instance
+    synchronized(AsteroidsDatabase::class.java){
+        if(!::INSTANCE.isInitialized){
+            INSTANCE = Room.databaseBuilder(
+                context,
+                AsteroidsDatabase::class.java,
+                "asteroids_database")
+                .build()
+        }
+        return INSTANCE
     }
 }
 

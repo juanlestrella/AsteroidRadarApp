@@ -1,30 +1,26 @@
 package com.udacity.asteroidradar.main
 
+import android.app.Application
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.udacity.asteroidradar.Asteroid
-import com.udacity.asteroidradar.Constants
 import com.udacity.asteroidradar.api.AsteroidApi
 import com.udacity.asteroidradar.api.getNextSevenDaysFormattedDates
 import com.udacity.asteroidradar.api.parseAsteroidsJsonResult
+import com.udacity.asteroidradar.database.getDatabase
+import com.udacity.asteroidradar.repository.AsteroidsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.json.JSONObject
-import retrofit2.Call
-import retrofit2.Response
-import java.text.SimpleDateFormat
-import java.util.*
+import java.lang.Exception
 
-private const val apiKey = "0yGMoxKgGXPW4ClJNyCqMEsR6eC89ZxDofuRPkwy"
+
 
 /**
  * TODO
  * -connect to api and get data
  * -include recycler view
- * 0) Implement Details Screen for once an "item" is clicked
+ * 0) Implement Details Screen once an "item" is clicked
  * 1) Create a local database using Room
  * 2) Store API data to local database
  * 3) Display the asteroids from database -> Sorted by date
@@ -38,37 +34,97 @@ private const val apiKey = "0yGMoxKgGXPW4ClJNyCqMEsR6eC89ZxDofuRPkwy"
  * 7) Check that app works without an internet connection
  */
 
-class MainViewModel : ViewModel() {
+class MainViewModel(application: Application) : ViewModel() {
 
     private val _status = MutableLiveData<String>()
     val status: LiveData<String>
         get() = _status
 
-    private val _asteroids = MutableLiveData<List<Asteroid>>()
-    val asteroids: LiveData<List<Asteroid>>
-        get() = _asteroids
-
-    private val startDate = getNextSevenDaysFormattedDates()[0]
-    private val endDate = getNextSevenDaysFormattedDates()[7]
+    private val database = getDatabase(application)
+    private val repository = AsteroidsRepository(database)
 
     init {
-        getAsteroids()
-        Log.i("MainViewModel", startDate)
-        Log.i("MainViewModel", endDate)
-        Log.i("MainViewModel", _status.value.toString())
-        Log.i("MainViewModel", _asteroids.value.toString())
-    }
-
-    private fun getAsteroids(){
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             try{
-                val response = AsteroidApi.retrofitService.getAsteroids(startDate, endDate, apiKey)
-                val jsonObject = JSONObject(response)
-                _asteroids.postValue(parseAsteroidsJsonResult(jsonObject))
+                repository.refreshData()
                 _status.postValue("Connected")
-            }catch (e: Exception) {
+            }catch (e: Exception){
                 _status.postValue("Failure:" + e.message)
             }
+
+        }
+    }
+
+    val asteroids = repository.asteroids
+
+    class Factory(val app: Application) : ViewModelProvider.Factory {
+        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
+                @Suppress("UNCHECKED_CAST")
+                return MainViewModel(app) as T
+            }
+            throw IllegalArgumentException("Unable to construct viewmodel")
         }
     }
 }
+
+/**
+     * problem: return value of parseAsteroidsJsonResult(jsonObject) is ArrayList<Asteroid>
+     * possible solution:
+     * still store in _asteroids.postValue the api data
+     * then loop thru the _asteroids.value and store the inner value in the database
+     * then replace the databinding from using the _asteroids value to using the database
+     *
+     * Use two functions:
+     * ----- 1) getApiData() = gets the data from api
+     * ----- 2) loadDatabase() = store the data from api to database
+     */
+    /**
+     * problem: return value of parseAsteroidsJsonResult(jsonObject) is ArrayList<Asteroid>
+     * possible solution:
+     * still store in _asteroids.postValue the api data
+     * then loop thru the _asteroids.value and store the inner value in the database
+     * then replace the databinding from using the _asteroids value to using the database
+     *
+     * Use two functions:
+     * ----- 1) getApiData() = gets the data from api
+     * ----- 2) loadDatabase() = store the data from api to database
+*/
+/*
+private val asteroidDao = getDatabase(application).asteroidsDao
+private fun loadDatabase(asteroidsData: LiveData<List<Asteroid>>){
+    asteroidDao.insertAll(asteroidsData)
+}
+
+
+private val _status = MutableLiveData<String>()
+val status: LiveData<String>
+    get() = _status
+
+private val _asteroids = MutableLiveData<List<Asteroid>>()
+val asteroids: LiveData<List<Asteroid>>
+    get() = _asteroids
+
+private val startDate = getNextSevenDaysFormattedDates()[0]
+private val endDate = getNextSevenDaysFormattedDates()[7]
+getAsteroids()
+Log.i("MainViewModel", startDate)
+Log.i("MainViewModel", endDate)
+Log.i("MainViewModel", _status.value.toString())
+Log.i("MainViewModel", _asteroids.value.toString())
+
+
+
+private fun getAsteroids(){
+    viewModelScope.launch(Dispatchers.IO) {
+        try{
+            val response = AsteroidApi.retrofitService.getAsteroids(startDate, endDate, apiKey)
+            val jsonObject = JSONObject(response)
+            //database.insertAll(parseAsteroidsJsonResult(jsonObject))
+            _asteroids.postValue(parseAsteroidsJsonResult(jsonObject))
+            _status.postValue("Connected")
+        }catch (e: Exception) {
+            _status.postValue("Failure:" + e.message)
+        }
+    }
+}*/
