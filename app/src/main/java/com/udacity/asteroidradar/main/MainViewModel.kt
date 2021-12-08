@@ -20,11 +20,11 @@ import java.lang.Exception
  * TODO
  * -connect to api and get data
  * -include recycler view
- * 0) Implement Details Screen once an "item" is clicked
- * 1) Create a local database using Room
- * 2) Store API data to local database
- * 3) Display the asteroids from database -> Sorted by date
- * 4) Cache data of asteroid by using a worker
+ * - Implement Details Screen once an "item" is clicked
+ * - Create a local database using Room
+ * - Store API data to local database
+ * - Display the asteroids from database -> Sorted by date
+ * - Cache data of asteroid by using a worker
  *      -> downloads and saves today's asteroids in background once a day
  *      -> when device is charging and wifi is enabled
  * 5) Download "Picture of Day"
