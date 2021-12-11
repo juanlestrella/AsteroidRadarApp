@@ -3,6 +3,7 @@ package com.udacity.asteroidradar.repository
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.udacity.asteroidradar.Asteroid
+import com.udacity.asteroidradar.BuildConfig
 import com.udacity.asteroidradar.PictureOfDay
 import com.udacity.asteroidradar.api.AsteroidApi
 import com.udacity.asteroidradar.api.getNextSevenDaysFormattedDates
@@ -16,7 +17,6 @@ class AsteroidsRepository(private val database: AsteroidsDatabase) {
 
     private val startDate = getNextSevenDaysFormattedDates()[0]
     private val endDate = getNextSevenDaysFormattedDates()[getNextSevenDaysFormattedDates().lastIndex]
-    private val apiKey = "0yGMoxKgGXPW4ClJNyCqMEsR6eC89ZxDofuRPkwy"
 
     val asteroids: LiveData<List<Asteroid>> = database.asteroidsDao.getAsteroids()
 
@@ -26,7 +26,7 @@ class AsteroidsRepository(private val database: AsteroidsDatabase) {
 
     suspend fun getImageOfTheDay(){
         withContext(Dispatchers.IO){
-            _imageOfTheDay.postValue(AsteroidApi.retrofitService.getImageOfTheDay(apiKey))
+            _imageOfTheDay.postValue(AsteroidApi.retrofitService.getImageOfTheDay(BuildConfig.NASA_API_KEY))
             if (_imageOfTheDay.value!!.mediaType != "image") {
                 _imageOfTheDay.postValue(null)
             }
@@ -35,7 +35,7 @@ class AsteroidsRepository(private val database: AsteroidsDatabase) {
 
     suspend fun refreshData() {
         withContext(Dispatchers.IO){
-            val response = AsteroidApi.retrofitService.getAsteroids(startDate, endDate, apiKey)
+            val response = AsteroidApi.retrofitService.getAsteroids(startDate, endDate, BuildConfig.NASA_API_KEY)
             val jsonObject = JSONObject(response)
             val asteroidsList = parseAsteroidsJsonResult(jsonObject)
             asteroidsList.forEach{

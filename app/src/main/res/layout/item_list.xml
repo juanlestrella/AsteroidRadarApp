@@ -43,8 +43,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/date"
             app:layout_constraintTop_toTopOf="parent"
-            app:statusIcon="@{asteroid.potentiallyHazardous}"
-            android:contentDescription="@{asteroid.closeApproachDate}" />
+            app:statusIcon="@{asteroid.potentiallyHazardous}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
